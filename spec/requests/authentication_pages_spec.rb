@@ -51,23 +51,17 @@ describe "Authentication" do
         end
       end
     end
+    describe "in the Microposts controller" do
 
-    describe 'as wrong user' do
-      let(:user) { FactoryGirl.create(:user) }
-      let(:wrong_user) { FactoryGirl.create(:user, email: "wrong@example.com") }
+        describe "submitting to the create action" do
+          before { post microposts_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
 
-      before { sign_in user, no_capybara: true }
-
-      describe 'submitting a GET request to the Users#edit action' do
-        before { get edit_user_path(wrong_user) }
-        specify { expect(response.body).not_to match(full_title('Edit user')) }
-        specify { expect(response).to redirect_to(root_url) }
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
       end
-
-      describe 'submitting a PATCH request to the Users#update action' do
-        before { patch user_path(wrong_user) }
-        specify { expect(response).to redirect_to(root_url) }
-      end
-    end
   end
 end
